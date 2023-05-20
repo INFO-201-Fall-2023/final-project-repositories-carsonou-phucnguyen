@@ -28,18 +28,19 @@ county_df <- summarize(
 ```
 
 ## Outliers in our Dataset
-
-```{r outliers}
+In this scatterplot, we analyzed the dataset in terms of how many electric vehicles were registered to each zip code in the state of Washington, and how many charging stations were in each zip code in the state of Washington as well. The red dots refer to outliers in our dataset, where the county had a charging station to electric vehicle ratio that was outside the interquartile range, while the blue dots refer to zip codes that fell within that interquartile range. The orange line shows the linear regression of all datapoints, while the purple line only shows the linear regression of the points that were not outliers.
+```{r outliers, echo = FALSE}
 ggplot(df, aes(y = Total_Electric_Vehicles, x = Total_Charging_Stations)) +
   geom_point(data = no_outliers_df, color = "blue", alpha = 0.25) + 
   geom_point(data = outliers_df, color = "red", alpha = 0.25) +
   geom_smooth(method = "lm", se = FALSE, color = "orange") + 
-  geom_smooth(data = no_outliers_df, method = "lm", se = FALSE, color = "purple")
+  geom_smooth(data = no_outliers_df, method = "lm", se = FALSE, color = "purple") +
+  labs(x = "Total Charging Stations", y = "Total Electric Vehicles", title = "Total Electric Vehicles in Comparison to Total Charging Stations per County")
 ```
 
 ## Zooming out on Washington
-
-```{r washington map}
+In this map we zoomed out on all the zip codes and grouped them into counties in Washington state. We then made a density map analyzing each county and which county had the highest charging station to electric vehicle percentage. The higher the percentage, the darker the color blue for the county. For this map, I had to use another library to plot the map instead of ggplot, and I used usmaps for this map.
+```{r washington map, echo = FALSE}
 plot_usmap(data = county_df, values = "CS_EV_Per", include = c("WA"), color = "blue") +
   scale_fill_continuous(low = "white", high = "blue", name = "Percentage") + 
   labs(title = "Percentage of Charging Stations per Electric Vehicle per County") +
@@ -47,9 +48,10 @@ plot_usmap(data = county_df, values = "CS_EV_Per", include = c("WA"), color = "b
 ```
 
 ## Comparing Percentages
-
-```{r contrast}
-ggplot(county_df, aes(x = CS_EV_Per, y = County)) +
-  geom_point(color = "blue") +
-  geom_vline(xintercept = mean(county_df$CS_EV_Per), color = "purple")
+In this bar chart, I analyzed each county's charging station to electric vehicle percentage and ordered the counties from highest to lowest percentage. The blue vertical line refers to the average percentage of all the counties. In the chart, you can see that there are a couple counties (Garfield, Ferry) with a percentage of 0%, and a county (Columbia) with a very high percentage. 
+```{r contrast, echo = FALSE}
+ggplot(county_df, aes(x = CS_EV_Per, y = reorder(County, CS_EV_Per))) +
+  geom_bar(stat = "identity") +
+  geom_vline(xintercept = mean(county_df$CS_EV_Per), color = "blue") +
+  labs(x = "Charging Station to Electric Vehicle Percentage", y = "County Name", title = "Each County's Charging Station to Electric Vehicle Percentage")
 ```
