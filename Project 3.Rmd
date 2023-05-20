@@ -1,0 +1,55 @@
+---
+title: "Project 3"
+author: "Carson Ou and Phuc Nguyen"
+date: "2023-05-19"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(ggplot2)
+library(maps)
+library(mapdata)
+library(usmap)
+df <- read.csv("MergedDataframe.csv")
+outliers_df <- df %>%
+  filter(CS_to_EV_Ratio_Percent > median(CS_to_EV_Ratio_Percent) + 
+           IQR(CS_to_EV_Ratio_Percent)/2 |
+         CS_to_EV_Ratio_Percent < median(CS_to_EV_Ratio_Percent) - 
+           IQR(CS_to_EV_Ratio_Percent)/2)
+no_outliers_df <- df[!df$X %in% outliers_df$X,]
+county_df <- summarize(
+  group_by(df, County, fips, state),
+  EV_Pop = sum(Total_Electric_Vehicles),
+  CS_Pop = sum(Total_Charging_Stations),
+  CS_EV_Per = sum(Total_Charging_Stations) / sum(Total_Electric_Vehicles) * 100
+)
+```
+
+## Outliers in our Dataset
+
+```{r outliers}
+ggplot(df, aes(y = Total_Electric_Vehicles, x = Total_Charging_Stations)) +
+  geom_point(data = no_outliers_df, color = "blue", alpha = 0.25) + 
+  geom_point(data = outliers_df, color = "red", alpha = 0.25) +
+  geom_smooth(method = "lm", se = FALSE, color = "orange") + 
+  geom_smooth(data = no_outliers_df, method = "lm", se = FALSE, color = "purple")
+```
+
+## Zooming out on Washington
+
+```{r washington map}
+plot_usmap(data = county_df, values = "CS_EV_Per", include = c("WA"), color = "blue") +
+  scale_fill_continuous(low = "white", high = "blue", name = "Percentage") + 
+  labs(title = "Percentage of Charging Stations per Electric Vehicle per County") +
+  theme(legend.position = "right")
+```
+
+## Comparing Percentages
+
+```{r contrast}
+ggplot(county_df, aes(x = CS_EV_Per, y = County)) +
+  geom_point(color = "blue") +
+  geom_vline(xintercept = mean(county_df$CS_EV_Per), color = "purple")
+```
