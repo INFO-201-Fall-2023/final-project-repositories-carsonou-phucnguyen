@@ -1,10 +1,6 @@
-library(dplyr)
-library(stringr)
 library(shiny)
 library(tidyverse)
 library(ggplot2)
-library(maps)
-library(mapdata)
 library(usmap)
 library(plotly)
 
@@ -23,12 +19,13 @@ county_df <- summarize(
 )
 
 ui <- fluidPage(
-  tags$style(HTML("h1{background-color: #ccd5d8;color: Black;}")),
   navbarPage("EVs and Charging Stations in Washington",
     tabPanel(title = "Introduction", 
+      tags$style(HTML("h1{background-color: #ccd5d8;color: Black;}")),
       titlePanel(h1("Examining the Population of Electric Vehicles and EV 
-                 Charging Stations in the State of Washington", align = "center")),
-      br(),
+                 Charging Stations in the State of Washington", align = "center",
+                 style = "color:black")),
+      p(em("By Carson Ou and Phuc Nguyen"), align = "center"),
       h3(strong("Background Information"), align = "center"),
       p("These graphs are mainly to compare and contrast correlations between Electric Vehicles 
         (EVs) and Electric Vehicle Charging Stations. The area of focus of this study is on 
@@ -38,10 +35,22 @@ ui <- fluidPage(
         counties of Washington. Further information is provided about each of the graphs given."),
       br(),
       img(src = "Seattle_aerial_2,_May_2023.png", width = "750px",
-          style="display: block; margin-left: auto; margin-right: auto;")
+          style="display: block; margin-left: auto; margin-right: auto;"),
+      br(),
+      br(),
+      HTML("<center><p>
+           <b>BUILT BY:</b> Carson Ou and Phuc Nguyen using the power of RStudio and Shiny<br>
+           <b>R PACKAGES:</b> tidyverse, shiny, ggplot2, usmaps, plotly<br>
+           <b>SOURCES:</b> Electric Vehicle Dataset from 
+           <a href = 'https://catalog.data.gov/dataset/electric-vehicle-population-data/resource/fa51be35-691f-45d2-9f3e-535877965e69'>
+           Data.gov</a>, Charging Station Dataset from 
+           <a href = 'https://data-usdot.opendata.arcgis.com/datasets/alternative-fueling-stations/explore'>
+           US Department of Transportation</a></p></center>"),
+      br(),
     ),
     tabPanel(title = "Zooming Out", 
-      titlePanel(h1("Zooming Out on the State of Washington", align = "center")),
+      titlePanel(h1("Zooming Out on the State of Washington", align = "center",
+                    style = "color:blue")),
       br(),
       h3(strong("About the Plot"), align = "center"),
       p("In this map we zoomed out on all the zip codes and grouped them into counties in 
@@ -68,7 +77,8 @@ ui <- fluidPage(
       )
     ),
     tabPanel(title = "Outliers",
-      titlePanel(h1("Outliers in our Dataset", align = "center")),
+      titlePanel(h1("Outliers in our Dataset", align = "center",
+                    style = "color:red")),
       br(),
       h3(strong("About the Plot"), align = "center"),
       p("In this scatter plot, we analyzed the dataset in terms of how many electric vehicles 
@@ -101,7 +111,8 @@ ui <- fluidPage(
       )
     ),
     tabPanel(title = "Comparison",
-      titlePanel(h1("Comparing Percentages", align = "center")),
+      titlePanel(h1("Comparing Percentages", align = "center",
+                    style = "color:green")),
       br(),
       h3(strong("About the Plot"), align = "center"),
       p("In this bar chart, we analyzed each county's charging station to electric vehicle 
