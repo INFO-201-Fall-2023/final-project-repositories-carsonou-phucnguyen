@@ -91,7 +91,7 @@ comparison <- tabPanel(
       checkboxInput("label_line", "Average Line Percentage",
                     value = FALSE
       ),
-      textInput("color", "Color for Plot (must be R studio or Hex)", value = "white"),
+      textInput("color", "Color for Plot (must be Rstudio or Hex)", value = "white"),
       h2("Results"),
       p("We can come to a conclusion that some counties in Washington have less access to
           charging stations and over half of the counties are below average. As the growth of
@@ -249,7 +249,8 @@ server <- function(input, output) {
         title = "Each County's Charging Station to Electric Vehicle Percentage"
       )
     
-    if(input$color %in% colors()) {
+    if(input$color %in% colors() | grepl("^#?([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$", 
+                                         input$color, ignore.case = TRUE)) { 
       p <- p + geom_col(fill = input$color, color = "lightblue")
     }
     

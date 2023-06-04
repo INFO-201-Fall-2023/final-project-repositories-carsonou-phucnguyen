@@ -1,0 +1,13 @@
+name: WA-State-CS-EV-Pop
+title: WA-State-CS-EV-Pop
+username:
+account: carsonou
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 9245007
+bundleId: 7303157
+url: https://carsonou.shinyapps.io/WA-State-CS-EV-Pop/
+when: 1685898838.87153
+lastSyncTime: 1685898838.87158
+asMultiple: FALSE
+asStatic: FALSE
