@@ -75,21 +75,23 @@ comparison <- tabPanel(
         label = "Choose a color for the avg line",
         choices = c("Blue", "Red", "Gold", "Green")
       ),
-      checkboxInput("comparison_line", "Show the average percentage line?",
+      p("Select to view"),
+      checkboxInput("comparison_line", "Average Percent Line",
         value = TRUE
       ),
-      checkboxInput("rect_above_avg", "Show the portion above average?",
+      checkboxInput("rect_above_avg", "Portion above average",
         value = TRUE
       ),
-      checkboxInput("rect_below_avg", "Show the portion above average?",
+      checkboxInput("rect_below_avg", "Portion below average",
         value = TRUE
       ),
-      checkboxInput("labels", "Show charging station to electric vehicle percentage?",
+      checkboxInput("labels", "Charging Station to Electric Vehicle Percentages",
         value = FALSE
       ),
-      checkboxInput("label_line", "Line Percentage?",
+      checkboxInput("label_line", "Average Line Percentage",
         value = FALSE
-      )
+      ),
+      textInput("color", "Color for Plot (must be R studio or Hex)", value = "white")
     ),
     mainPanel(
       plotlyOutput(outputId = "comparison_plot"),
@@ -106,7 +108,7 @@ outliers <- tabPanel(
   title = "Outliers",
   titlePanel(h1("Outliers in our Dataset",
     align = "center",
-    style = "color:red; background-color:#ffcccb"
+    style = "color:#ff5349; background-color:#fcd299"
   )),
   br(),
   h3(strong("About this Scatter Plot"), align = "center"),
@@ -200,7 +202,7 @@ server <- function(input, output) {
   output$county_plot <- renderPlotly({
     p <- plot_usmap(
       data = county_df, values = "CS_EV_Per", include = c("WA"),
-      color = input$color
+      color = input$density_color
     ) +
       scale_fill_continuous(low = "white", high = input$density_color, name = "Percentage") +
       labs(title = "Percentage of Charging Stations per Electric Vehicle per County")
@@ -245,8 +247,11 @@ server <- function(input, output) {
       labs(
         x = "Charging Station to Electric Vehicle Percentage", y = "County Name",
         title = "Each County's Charging Station to Electric Vehicle Percentage"
-      ) +
-      geom_col(fill = "white", color = "lightblue")
+      )
+    
+    if(input$color %in% colors()) {
+    p <- p + geom_col(fill = input$color, color = "lightblue")
+    }
 
     if (input$labels == TRUE) {
       p <- p + geom_text(aes(label = round(CS_EV_Per, 2)), size = 2)
